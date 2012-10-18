@@ -1,0 +1,6 @@
+<Alloy>
+	<Window id="Window">
+		<TableView id="tableView" />
+		<Require type="widget" src="com.appcelerator.loading" id="loading"/>
+	</Window>
+</Alloy>
