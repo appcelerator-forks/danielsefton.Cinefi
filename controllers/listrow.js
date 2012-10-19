@@ -1,3 +1,4 @@
 var args = arguments[0] || {};
-$.icon.image = args.image;
+$.thumbnail.image = args.image;
 $.title.text = args.title || '';
+$.authors.text = args.authors || '';

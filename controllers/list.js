@@ -1,8 +1,11 @@
 var API_URL = 'https://www.googleapis.com/books/v1/volumes?q=';
-var HANDLERS = ['success','error'];
-var MAX_BOOKS = 10; // for demo purposes, set a max for the number of books
+var HANDLERS = ['success', 'error'];
+var MAX_BOOKS = 10;
+// for demo purposes, set a max for the number of books
 
-var AppModel = require('alloy/backbone').Model.extend({ loading: false });
+var AppModel = require('alloy/backbone').Model.extend({
+	loading : false
+});
 var model = new AppModel;
 var handlers = {};
 
@@ -11,7 +14,7 @@ model.on('change:loading', function(m) {
 	if (m.get('loading')) {
 		//$.searchView.touchEnabled = false;
 		//$.search.opacity = 0;
-		$.loading.setOpacity(1.0);	
+		$.loading.setOpacity(1.0);
 	} else {
 		$.loading.setOpacity(0);
 		//$.search.opacity = 1;
@@ -34,18 +37,20 @@ function processBookData(data) {
 	}
 
 	// process each book, turning it into a table row
-	for (var i = 0; i < Math.min(items.length,MAX_BOOKS); i++) {
+	for (var i = 0; i < Math.min(items.length, MAX_BOOKS); i++) {
 		var info = items[i].volumeInfo;
-		if (!info) { continue; }
+		if (!info) {
+			continue;
+		}
 		var links = info.imageLinks || {};
 		var authors = (info.authors || []).join(', ');
 		books.push({
-			title: info.title || '',
-			authors: authors,
-			image: links.smallThumbnail || links.thumbnail || 'none'
+			title : info.title || '',
+			authors : authors,
+			image : links.smallThumbnail || links.thumbnail || 'none'
 		});
 	}
-	Ti.API.info("BEFORE SUCCESS HANDLER");
+
 	// fire success handler with list of books
 	successHandler(books);
 }
@@ -60,17 +65,17 @@ function searchForBooks(e) {
 		alert('You need to enter search text');
 		return;
 	}
-	Ti.API.info("SEARCHING");
+
 	// search Google Book API
 	model.set('loading', true);
 	var xhr = Ti.Network.createHTTPClient({
-		onload: function(e) {
-			if (handlers.success) {
-				processBookData(this.responseText);	
-			}
+		onload : function(e) {
+			//if (handlers.success) {
+			processBookData(this.responseText);
+			//}
 			model.set('loading', false);
 		},
-		onerror: function(e) {	
+		onerror : function(e) {
 			if (handlers.error) {
 				handlers.error(e);
 			} else {
@@ -79,25 +84,24 @@ function searchForBooks(e) {
 			}
 			model.set('loading', false);
 		},
-		timeout: 5000
+		timeout : 5000
 	});
 	xhr.open("GET", API_URL + value);
 	xhr.send();
 }
 
 function successHandler(books) {
-    var data = [];
-    _.each(books, function(book) {
-      var args = {
-        title: book.title,
-        authors: book.authors,
-        image: book.image
-      };
-      var row = Alloy.createController('listrow', args).getView();
-      data.push(row);
-    });
-    Ti.API.info("TABLE SET DATA");
-    $.tableView.setData(data);
+	var data = [];
+	_.each(books, function(book) {
+		var args = {
+			title : book.title,
+			authors : book.authors,
+			image : book.image
+		};
+		var row = Alloy.createController('listrow', args).getView();
+		data.push(row);
+	});
+	$.tableView.setData(data);
 }
 
 searchForBooks(null);

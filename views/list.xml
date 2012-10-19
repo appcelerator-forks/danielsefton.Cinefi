@@ -1,5 +1,5 @@
 <Alloy>
-	<Window id="Window">
+	<Window id="list">
 		<TableView id="tableView" />
 		<Require type="widget" src="com.appcelerator.loading" id="loading"/>
 	</Window>

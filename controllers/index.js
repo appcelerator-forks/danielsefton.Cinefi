@@ -45,13 +45,13 @@ section.headerView = customView;
 
 section.add(Alloy.createController('menurow', {
 	title : 'Map',
-	view : 'view1',
+	customView : 'map',
 	image : "images/ic_search.png"
 }).getView());
 
 section.add(Alloy.createController('menurow', {
 	title : 'List',
-	view : 'view2',
+	customView : 'list',
 	image : "images/ic_search.png"
 }).getView());
 
@@ -59,24 +59,23 @@ var data = [section];
 
 // Pass data to widget tableView
 $.ds.tableView.data = data;
+
+// Customise look. TODO: Override in tss
 $.ds.tableView.backgroundColor = "#D8D8D8";
 $.ds.tableView.separatorColor = "transparent"
+$.ds.innerwin.title = "CINEFI";
+$.ds.innerwin.barColor = "#00549C";
 
-var view1 = Alloy.createController('map').getView('Window');
-var view2 = Alloy.createController('list').getView('Window');
-
-$.ds.innerwin.add(view1);
-var currentView = view1;
+var currentView = Alloy.createController("map").getView();
+$.ds.innerwin.add(currentView);
 
 // Swap views on menu item click
 $.ds.tableView.addEventListener('click', function selectRow(e) {
-	$.ds.innerwin.remove(currentView);
-	if (e.row.customTitle.text === "Map") {
-		currentView = view1;
-	} else if (e.row.customTitle.text === "List") {
-		currentView = view2;
+	if (currentView.id != e.row.customView) {
+		$.ds.innerwin.remove(currentView);
+		currentView = Alloy.createController(e.row.customView).getView();
+		$.ds.innerwin.add(currentView);
 	}
-	$.ds.innerwin.add(currentView);
 	$.ds.toggleSlider();
 });
 
@@ -93,9 +92,6 @@ $.ds.tableView.addEventListener('scroll', function(e) {
 	if (storedRowTitle != null)
 		storedRowTitle.color = "#666";
 });
-
-$.ds.innerwin.title = "CINEFI";
-$.ds.innerwin.barColor = "#00549C";
 
 if (Ti.Platform.osname === 'iphone')
 	$.win.open({
