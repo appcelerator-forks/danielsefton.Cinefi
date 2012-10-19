@@ -60,7 +60,7 @@ function processBookData(data) {
 ////////////////////////////////////
 function searchForBooks(e) {
 	// validate search data
-	var value = encodeURIComponent("harry potter");
+	var value = encodeURIComponent("movies");
 	if (!value) {
 		alert('You need to enter search text');
 		return;
