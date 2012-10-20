@@ -1,7 +1,7 @@
 var API_URL = 'https://www.googleapis.com/books/v1/volumes?q=';
+//var API_URL = http://www.google.com/ig/api?movies=poznan&theater=rialto&start=2&date=3&time=1
 var HANDLERS = ['success', 'error'];
-var MAX_BOOKS = 10;
-// for demo purposes, set a max for the number of books
+var MAX_CINEMAS = 10;
 
 var AppModel = require('alloy/backbone').Model.extend({
 	loading : false
@@ -12,21 +12,17 @@ var handlers = {};
 // react to changes in the model state
 model.on('change:loading', function(m) {
 	if (m.get('loading')) {
-		//$.searchView.touchEnabled = false;
-		//$.search.opacity = 0;
 		$.loading.setOpacity(1.0);
 	} else {
 		$.loading.setOpacity(0);
-		//$.search.opacity = 1;
-		//$.searchView.touchEnabled = true;
 	}
 });
 
 ///////////////////////////////////////
 ////////// private functions //////////
 ///////////////////////////////////////
-function processBookData(data) {
-	var books = [];
+function processCinemaData(data) {
+	var cinemas = [];
 
 	// make sure the returned data is valid
 	try {
@@ -36,29 +32,29 @@ function processBookData(data) {
 		return;
 	}
 
-	// process each book, turning it into a table row
-	for (var i = 0; i < Math.min(items.length, MAX_BOOKS); i++) {
+	// process each cinema, turning it into a table row
+	for (var i = 0; i < Math.min(items.length, MAX_CINEMAS); i++) {
 		var info = items[i].volumeInfo;
 		if (!info) {
 			continue;
 		}
 		var links = info.imageLinks || {};
 		var authors = (info.authors || []).join(', ');
-		books.push({
+		cinemas.push({
 			title : info.title || '',
 			authors : authors,
 			image : links.smallThumbnail || links.thumbnail || 'none'
 		});
 	}
 
-	// fire success handler with list of books
-	successHandler(books);
+	// fire success handler with list of cinemas
+	successHandler(cinemas);
 }
 
 ////////////////////////////////////
 ////////// event handlers //////////
 ////////////////////////////////////
-function searchForBooks(e) {
+function searchForCinemas(e) {
 	// validate search data
 	var value = encodeURIComponent("movies");
 	if (!value) {
@@ -66,12 +62,12 @@ function searchForBooks(e) {
 		return;
 	}
 
-	// search Google Book API
+	// search Google Movie API
 	model.set('loading', true);
 	var xhr = Ti.Network.createHTTPClient({
 		onload : function(e) {
 			//if (handlers.success) {
-			processBookData(this.responseText);
+			processCinemaData(this.responseText);
 			//}
 			model.set('loading', false);
 		},
@@ -90,13 +86,13 @@ function searchForBooks(e) {
 	xhr.send();
 }
 
-function successHandler(books) {
+function successHandler(cinemas) {
 	var data = [];
-	_.each(books, function(book) {
+	_.each(cinemas, function(cinema) {
 		var args = {
-			title : book.title,
-			authors : book.authors,
-			image : book.image
+			title : cinema.title,
+			authors : cinema.authors,
+			image : cinema.image
 		};
 		var row = Alloy.createController('listrow', args).getView();
 		data.push(row);
@@ -104,4 +100,4 @@ function successHandler(books) {
 	$.tableView.setData(data);
 }
 
-searchForBooks(null);
+searchForCinemas(null);

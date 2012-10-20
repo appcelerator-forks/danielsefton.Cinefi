@@ -60,7 +60,7 @@ var data = [section];
 // Pass data to widget tableView
 $.ds.tableView.data = data;
 
-// Customise look. TODO: Override in tss
+// Customise look.
 $.ds.tableView.backgroundColor = "#D8D8D8";
 $.ds.tableView.separatorColor = "transparent"
 $.ds.innerwin.title = "CINEFI";
