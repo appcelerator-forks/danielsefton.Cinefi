@@ -1,3 +1,4 @@
+var NaviBridge = require("ti.navibridge/ti.navibridge");
 var API_URL = 'https://www.googleapis.com/books/v1/volumes?q=';
 //var API_URL = http://www.google.com/ig/api?movies=poznan&theater=rialto&start=2&date=3&time=1
 var HANDLERS = ['success', 'error'];
@@ -101,3 +102,10 @@ function successHandler(cinemas) {
 }
 
 searchForCinemas(null);
+
+$.tableView.addEventListener('click', function selectRow(e) {
+	NaviBridge.addPOI({
+		lat: "37.3861",
+		lon: "122.0828"
+	});
+});
